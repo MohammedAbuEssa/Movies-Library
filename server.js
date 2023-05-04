@@ -51,6 +51,7 @@ function handleAddMovies(req, res) {
     res.send("Added successfully");
   });
 }
+/////
 
 function handleGetMovies(req, res) {
   const sql = "select * from movies;";
