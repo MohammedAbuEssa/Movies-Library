@@ -32,8 +32,7 @@ let spiderMan = new MovesConstructor(
 movieList.push(spiderMan);
 
 app.get("/", (req, res) => {
-  res.send("Hello");
-  // console.log(movieList[0]);
+  res.send(spiderMan);
 });
 
 app.get("/trending", handleTrendingReq);
