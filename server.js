@@ -6,7 +6,11 @@ const data = require("./Movie Data/data.json");
 const axios = require("axios");
 const cors = require("cors");
 const { status } = require("express/lib/response");
+const pg = require("pg");
+const client = new pg.Client(process.env.DATABASE_URL);
+
 app.use(cors());
+app.use(express.json());
 const key = process.env.API_KEY;
 const port = process.env.PORT;
 const movieList = [];
@@ -36,6 +40,34 @@ app.get("/trending", handleTrendingReq);
 app.get("/search", handleSearchReq);
 app.get("/popular", handelPopular);
 app.get("/toprated", handleTopRated);
+app.get("/getMovies", handleGetMovies);
+app.post("/getMovies", handleAddMovies);
+
+function handleAddMovies(req, res) {
+  const movie = req.body;
+  // console.log(movie);
+  const sql = `INSERT into movies (title,release_date,poster_path,overview) values ('${movie.name}','${movie.release}','${movie.poster}','${movie.overview}');`;
+  client.query(sql).then(() => {
+    res.send("Added successfully");
+  });
+}
+
+function handleGetMovies(req, res) {
+  const sql = "select * from movies;";
+  client.query(sql).then((data) => {
+    let dataFromDB = data.rows.map((item) => {
+      let movie = new MovesConstructor(
+        item.id,
+        item.title,
+        item.release_date,
+        item.poster_path,
+        item.overview
+      );
+      return movie;
+    });
+    res.send(dataFromDB);
+  });
+}
 
 async function handleTrendingReq(req, res) {
   const url = `https://api.themoviedb.org/3/trending/all/week?api_key=${key}`;
@@ -118,6 +150,8 @@ function serverError(req, res) {
 app.use("*", pageNotFound);
 app.use("bad", serverError);
 
-app.listen(port, () => {
-  console.log(`Port ${port} is running`);
+client.connect().then(() => {
+  app.listen(port, () => {
+    console.log(`Port ${port} is running`);
+  });
 });
