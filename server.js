@@ -41,6 +41,43 @@ app.get("/popular", handelPopular);
 app.get("/toprated", handleTopRated);
 app.get("/getMovies", handleGetMovies);
 app.post("/getMovies", handleAddMovies);
+app.put("/UPDATE/:id", handelUpdateId);
+app.delete("/DELETE/:id", handleDeleteId);
+app.get("/getMovie/:id", handleGetId);
+
+function handleGetId(req, res) {
+  const id = req.params.id;
+  const sql = `select * from movies where id=${id};`;
+  client.query(sql).then((data) => {
+    res.status(200).send(data.rows);
+  });
+}
+
+function handelUpdateId(req, res) {
+  const id = req.params.id;
+  const sql = `update movies set title=$1, release_date=$2, poster_path=$3, overview=$4 where id=${id} returning *;`;
+  const values = [
+    req.body.title,
+    req.body.release_date,
+    req.body.poster_path,
+    req.body.overview,
+  ];
+  client.query(sql, values).then(() => {
+    res.status(200).send(data.rows);
+  });
+}
+
+function handleDeleteId(req, res) {
+  const id = req.params.id;
+  const sql = `delete from movies where id=${id};`;
+  client.query(sql).then((data) => {
+    if (data) {
+      res.status(204).json({ succses: "Deleted sucsses" });
+    } else {
+      res.status(404).json({ error: "Not found" });
+    }
+  });
+}
 
 function handleAddMovies(req, res) {
   const movie = req.body;
