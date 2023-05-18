@@ -15,12 +15,13 @@ const key = process.env.API_KEY;
 const port = process.env.PORT;
 const movieList = [];
 
-function MovesConstructor(id, name, release, poster, overview) {
+function MovesConstructor(id, name, release, poster, overview, comment) {
   this.id = id;
   this.name = name;
   this.release = release;
   this.poster = poster;
   this.overview = overview;
+  this.comment = comment;
 }
 
 let spiderMan = new MovesConstructor(
@@ -82,7 +83,7 @@ function handleDeleteId(req, res) {
 function handleAddMovies(req, res) {
   const movie = req.body;
   // console.log(movie);
-  const sql = `INSERT into movies (title,release_date,poster_path,overview) values ('${movie.name}','${movie.release}','${movie.poster}','${movie.overview}');`;
+  const sql = `INSERT into movies (title,release_date,poster_path,overview,comment) values ('${movie.name}','${movie.release}','${movie.poster}','${movie.overview}','${movie.comment}');`;
   client.query(sql).then(() => {
     res.send("Added successfully");
   });
