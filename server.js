@@ -56,12 +56,13 @@ function handleGetId(req, res) {
 
 function handelUpdateId(req, res) {
   const id = req.params.id;
-  const sql = `update movies set title=$1, release_date=$2, poster_path=$3, overview=$4 where id=${id} returning *;`;
+  const sql = `update movies set title=$1, release_date=$2, poster_path=$3, overview=$4 ,comment=$5 where id=${id} returning *;`;
   const values = [
     req.body.title,
     req.body.release_date,
     req.body.poster_path,
     req.body.overview,
+    req.body.comment,
   ];
   client.query(sql, values).then(() => {
     res.status(200).send(data.rows);
