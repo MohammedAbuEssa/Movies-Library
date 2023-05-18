@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS movies(
 title varchar(8000),
 release_date date,
 poster_path varchar(8000),
-overview varchar(8000)
+overview varchar(8000),
+comment varchar(8000)
 );
 
 
